@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Mood Tracker</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link href="https://fonts.googleapis.com/css?family=Roboto:400,700&display=swap" rel="stylesheet" />
+  <style>
+    body {
+      font-family: 'Roboto', sans-serif;
+      background: linear-gradient(135deg, #8d3bbf 0%, #f8c6f9 100%);
+      margin: 0;
+      min-height: 100vh;
+      color: #2d0036;
+    }
+    .container {
+      max-width: 500px;
+      margin: 40px auto;
+      background: #fff;
+      border-radius: 18px;
+      box-shadow: 0 4px 24px rgba(141,59,191,0.15);
+      padding: 32px 28px 24px 28px;
+    }
+    h1 {
+      text-align: center;
+      margin-bottom: 24px;
+      color: #8d3bbf;
+      letter-spacing: 1px;
+    }
+    form {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      margin-bottom: 32px;
+    }
+    .emoji-group {
+      display: flex;
+      justify-content: space-between;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .emoji-option {
+      font-size: 2rem;
+      cursor: pointer;
+      border: 2px solid transparent;
+      border-radius: 50%;
+      padding: 6px;
+      transition: border 0.2s;
+    }
+    .emoji-option.selected {
+      border: 2px solid #8d3bbf;
+      background: #f8c6f9;
+    }
+    textarea {
+      resize: none;
+      border-radius: 8px;
+      border: 1px solid #e0c6f9;
+      padding: 10px;
+      font-size: 1rem;
+      min-height: 60px;
+      outline: none;
+      transition: border 0.2s;
+    }
+    textarea:focus {
+      border: 1.5px solid #8d3bbf;
+    }
+    button {
+      background: linear-gradient(90deg, #8d3bbf 0%, #f8c6f9 100%);
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      padding: 12px;
+      font-size: 1.1rem;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    button:hover {
+      background: linear-gradient(90deg, #f8c6f9 0%, #8d3bbf 100%);
+      color: #8d3bbf;
+    }
+    .history-title {
+      margin-top: 0;
+      color: #8d3bbf;
+      font-size: 1.2rem;
+      letter-spacing: 0.5px;
+    }
+    .history-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      max-height: 220px;
+      overflow-y: auto;
+    }
+    .history-item {
+      display: flex;
+      align-items: center;
+      background: #f8c6f9;
+      border-radius: 8px;
+      margin-bottom: 10px;
+      padding: 10px 14px;
+      gap: 14px;
+      box-shadow: 0 2px 8px rgba(141,59,191,0.05);
+    }
+    .history-date {
+      font-weight: bold;
+      color: #8d3bbf;
+      min-width: 90px;
+    }
+    .history-mood {
+      font-size: 1.5rem;
+      margin-right: 8px;
+    }
+    .history-note {
+      color: #2d0036;
+      font-size: 0.98rem;
+      opacity: 0.85;
+    }
+    @media (max-width: 600px) {
+      .container {
+        padding: 18px 6px 14px 6px;
+      }
+      .history-date {
+        min-width: 70px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Mood Tracker</h1>
+    <form id="moodForm">
+      <div>
+        <label for="mood" style="font-weight:500;">Today's Mood</label>
+        <div class="emoji-group" id="emojiGroup">
+          <span class="emoji-option" data-emoji="🙂" title="Happy">🙂</span>
+          <span class="emoji-option" data-emoji="🙁" title="Sad">🙁</span>
+          <span class="emoji-option" data-emoji="😡" title="Angry">😡</span>
+          <span class="emoji-option" data-emoji="😴" title="Tired">😴</span>
+          <span class="emoji-option" data-emoji="😃" title="Excited">😃</span>
+          <span class="emoji-option" data-emoji="😢" title="Crying">😢</span>
+        </div>
+      </div>
+      <div>
+        <label for="note" style="font-weight:500;">Note (optional)</label>
+        <textarea id="note" placeholder="Add a comment..."></textarea>
+      </div>
+      <button type="submit">Save Mood</button>
+    </form>
+    <h2 class="history-title">Mood History</h2>
+    <ul class="history-list" id="historyList"></ul>
+  </div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+    import {
+      getDatabase,
+      ref,
+      set,
+      get,
+      child
+    } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyD_Z51Nz75o-IjMoKpMHGr6pvlxjLd4nLY",
+      authDomain: "authentication-2df46.firebaseapp.com",
+      databaseURL: "https://authentication-2df46-default-rtdb.asia-southeast1.firebasedatabase.app/",
+      projectId: "authentication-2df46",
+      storageBucket: "authentication-2df46.appspot.com",
+      messagingSenderId: "878508241019",
+      appId: "1:878508241019:web:53b3492da3e31d2159f2de",
+      measurementId: "G-HL1G6ESF04"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getDatabase(app);
+
+    let userId = null;
+    let selectedMood = null;
+
+    document.getElementById('emojiGroup').addEventListener('click', (e) => {
+      if (e.target.classList.contains('emoji-option')) {
+        document.querySelectorAll('.emoji-option').forEach(el => el.classList.remove('selected'));
+        e.target.classList.add('selected');
+        selectedMood = e.target.dataset.emoji;
+      }
+    });
+
+    document.getElementById('moodForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      if (!selectedMood) {
+        alert("Please select a mood.");
+        return;
+      }
+      const note = document.getElementById('note').value.trim();
+      const today = new Date().toISOString().split('T')[0];
+
+      try {
+        await set(ref(db, `users/${userId}/moods/${today}`), {
+          mood: selectedMood,
+          note: note
+        });
+
+        document.getElementById('note').value = '';
+        document.querySelectorAll('.emoji-option').forEach(el => el.classList.remove('selected'));
+        selectedMood = null;
+        loadMoodHistory();
+      } catch (err) {
+        alert("Failed to save mood: " + err.message);
+      }
+    });
+
+    async function loadMoodHistory() {
+      const list = document.getElementById('historyList');
+      list.innerHTML = '<li>Loading...</li>';
+      try {
+        const snapshot = await get(ref(db, `users/${userId}/moods`));
+        const data = snapshot.val();
+        list.innerHTML = '';
+        if (data) {
+          const entries = Object.entries(data).sort((a, b) => b[0].localeCompare(a[0]));
+          entries.forEach(([date, entry]) => {
+            const noteText = entry.note ? `<span class="history-note">"${entry.note}"</span>` : '';
+            list.innerHTML += `
+              <li class="history-item">
+                <span class="history-date">${date}</span>
+                <span class="history-mood">${entry.mood}</span>
+                ${noteText}
+              </li>
+            `;
+          });
+        } else {
+          list.innerHTML = '<li>No mood entries yet.</li>';
+        }
+      } catch (err) {
+        list.innerHTML = '<li>Error loading history.</li>';
+      }
+    }
+
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        userId = user.uid;
+        loadMoodHistory();
+      } else {
+        alert("You must be logged in to use the Mood Tracker.");
+        window.location.href = "login.html";
+      }
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Wellness Buddy Chat</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(135deg, #8d3bbf 0%, #f8c6f9 100%);
+      color: #fff;
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+    }
+
+    header {
+      position: relative;
+      background: rgba(0, 0, 0, 0.2);
+      padding: 1rem 2.5rem;
+      text-align: center;
+      font-size: 1.5rem;
+      font-weight: bold;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    }
+
+    .icon {
+      position: absolute;
+      top: 1rem;
+      font-size: 1.4rem;
+      cursor: pointer;
+    }
+
+    .profile-icon {
+      left: 1rem;
+    }
+
+    .settings-icon {
+      right: 1rem;
+    }
+
+    #chatbox {
+      flex: 1;
+      overflow-y: auto;
+      padding: 1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .msg {
+      padding: 10px 14px;
+      max-width: 80%;
+      border-radius: 20px;
+      word-wrap: break-word;
+      font-size: 1rem;
+    }
+
+    .user {
+      align-self: flex-end;
+      background: #dfffcf;
+      color: #000;
+    }
+
+    .bot {
+      align-self: flex-start;
+      background: #ffffffbb;
+      color: #000;
+    }
+
+    #input-area {
+      display: flex;
+      padding: 1rem;
+      background: rgba(255,255,255,0.1);
+      backdrop-filter: blur(6px);
+      box-shadow: 0 -2px 5px rgba(0,0,0,0.2);
+    }
+
+    #input {
+      flex: 1;
+      padding: 10px 14px;
+      border: none;
+      border-radius: 20px;
+      font-size: 1rem;
+    }
+
+    button {
+      padding: 10px 18px;
+      margin-left: 10px;
+      border: none;
+      border-radius: 20px;
+      background: #fff;
+      color: #7b4397;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    button:hover {
+      background: #f1f1f1;
+    }
+
+    @media (max-width: 600px) {
+      #input-area {
+        flex-direction: column;
+        gap: 0.5rem;
+      }
+
+      button {
+        width: 100%;
+        margin-left: 0;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <span class="icon profile-icon" onclick="openProfile()">👤</span>
+  💬 Talk to Wellness Buddy
+  <span class="icon settings-icon" onclick="openSettings()">⚙️</span>
+</header>
+
+<div id="chatbox"></div>
+
+<div id="input-area">
+  <input id="input" placeholder="Ask something...">
+  <button onclick="ask()">Send</button>
+</div>
+
+<script>
+  const API_KEY = "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";
+
+  async function ask() {
+    const inputElem = document.getElementById("input");
+    const input = inputElem.value.trim();
+    if (!input) return;
+
+    addMsg(input, "user");
+    inputElem.value = "";
+
+    try {
+      const res = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+        method: "POST",
+        headers: {
+          "Authorization": `Bearer ${API_KEY}`,
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          model: "llama3-8b-8192",
+          messages: [{ role: "user", content: input }]
+        })
+      });
+
+      const data = await res.json();
+      const reply = data.choices?.[0]?.message?.content || "Sorry, I didn't understand that.";
+      addMsg(reply, "bot");
+    } catch (err) {
+      console.error(err);
+      addMsg("Error connecting to chatbot service.", "bot");
+    }
+  }
+
+  function addMsg(text, type) {
+    const div = document.createElement("div");
+    div.className = `msg ${type}`;
+    div.textContent = text;
+    document.getElementById("chatbox").appendChild(div);
+    div.scrollIntoView({ behavior: "smooth" });
+  }
+
+  function openProfile() {
+    alert("Profile settings coming soon!");
+  }
+
+  function openSettings() {
+    alert("Settings coming soon!");
+  }
+</script>
+
+</body>
+</html>

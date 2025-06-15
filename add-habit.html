@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Add New Habit</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet" />
+  <style>
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: 'Inter', sans-serif;
+      background: linear-gradient(135deg, #8d3bbf 0%, #f8c6f9 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .container {
+      background: #fff;
+      border-radius: 18px;
+      box-shadow: 0 8px 32px rgba(141, 59, 191, 0.15);
+      padding: 2.5rem 2rem;
+      max-width: 400px;
+      width: 100%;
+    }
+    h2 {
+      color: #8d3bbf;
+      text-align: center;
+      margin-bottom: 1.5rem;
+      font-weight: 600;
+    }
+    form label {
+      display: block;
+      margin-bottom: 0.5rem;
+      color: #4a235a;
+      font-weight: 500;
+    }
+    form input,
+    form select {
+      width: 100%;
+      padding: 0.7rem;
+      margin-bottom: 1.2rem;
+      border: 1px solid #e0d3ec;
+      border-radius: 8px;
+      font-size: 1rem;
+      background: #faf6fc;
+      transition: border 0.2s;
+    }
+    form input:focus,
+    form select:focus {
+      border-color: #8d3bbf;
+      outline: none;
+    }
+    .btn {
+      width: 100%;
+      padding: 0.9rem;
+      background: linear-gradient(90deg, #8d3bbf 0%, #f8c6f9 100%);
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      font-size: 1.1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .btn:hover {
+      background: linear-gradient(90deg, #7a2ea8 0%, #e6aeea 100%);
+    }
+    .success,
+    .error {
+      text-align: center;
+      margin-top: 1rem;
+      font-size: 1rem;
+      font-weight: 500;
+    }
+    .success {
+      color: #27ae60;
+    }
+    .error {
+      color: #c0392b;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Add New Habit</h2>
+    <form id="habitForm" autocomplete="off">
+      <label for="habitName">Habit Name</label>
+      <input type="text" id="habitName" name="habitName" required maxlength="50" />
+
+      <label for="category">Category</label>
+      <select id="category" name="category" required>
+        <option value="">Select Category</option>
+        <option value="Fitness">Fitness</option>
+        <option value="Nutrition">Nutrition</option>
+        <option value="Mindfulness">Mindfulness</option>
+        <option value="Productivity">Productivity</option>
+        <option value="Learning">Learning</option>
+        <option value="Other">Other</option>
+      </select>
+
+      <label for="goal">Goal</label>
+      <select id="goal" name="goal" required>
+        <option value="">Select Goal</option>
+        <option value="10,000 steps">10,000 steps</option>
+        <option value="Drink 8 glasses of water">Drink 8 glasses of water</option>
+        <option value="Read for 30 minutes">Read for 30 minutes</option>
+        <option value="Meditate 10 mins">Meditate 10 mins</option>
+        <option value="Workout 3 times/week">Workout 3 times/week</option>
+        <option value="Custom">Custom Goal</option>
+      </select>
+
+      <input type="text" id="customGoal" name="customGoal" placeholder="Enter your custom goal"
+        style="display: none; margin-top: -1rem;" maxlength="40" />
+
+      <label for="steps">Steps (optional)</label>
+      <input type="number" id="steps" name="steps" placeholder="e.g., 5000" min="0" />
+
+      <label for="type">Type</label>
+      <select id="type" name="type" required>
+        <option value="">Select Type</option>
+        <option value="Daily">Daily</option>
+        <option value="Weekly">Weekly</option>
+      </select>
+
+      <label for="reminder">Reminder Time (optional)</label>
+      <input type="time" id="reminder" name="reminder" />
+
+      <button type="submit" class="btn">Save Habit</button>
+      <div id="message"></div>
+    </form>
+  </div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
+    import { getDatabase, ref, push, child, get } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-database.js";
+    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyD_Z51Nz75o-IjMoKpMHGr6pvlxjLd4nLY",
+      authDomain: "authentication-2df46.firebaseapp.com",
+      databaseURL: "https://authentication-2df46-default-rtdb.asia-southeast1.firebasedatabase.app/",
+      projectId: "authentication-2df46",
+      storageBucket: "authentication-2df46.appspot.com",
+      messagingSenderId: "878508241019",
+      appId: "1:878508241019:web:53b3492da3e31d2159f2de"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+    const auth = getAuth(app);
+
+    const form = document.getElementById("habitForm");
+    const goalSelect = document.getElementById("goal");
+    const customGoalInput = document.getElementById("customGoal");
+    const messageDiv = document.getElementById("message");
+
+    goalSelect.addEventListener("change", () => {
+      if (goalSelect.value === "Custom") {
+        customGoalInput.style.display = "block";
+        customGoalInput.required = true;
+      } else {
+        customGoalInput.style.display = "none";
+        customGoalInput.required = false;
+      }
+    });
+
+    function scheduleHabitReminder(habit) {
+      if (!habit.reminder || !habit.name) return;
+
+      const [hour, minute] = habit.reminder.split(":").map(Number);
+      const now = new Date();
+      const reminderTime = new Date();
+
+      reminderTime.setHours(hour, minute, 0, 0);
+      if (reminderTime < now) reminderTime.setDate(reminderTime.getDate() + 1);
+
+      const timeout = reminderTime.getTime() - now.getTime();
+      setTimeout(() => {
+        sendHabitNotification(habit.name, habit.goal);
+        checkMissedCompletion(habit);
+      }, timeout);
+    }
+
+    function sendHabitNotification(habitName, goalText) {
+      if (Notification.permission === "granted") {
+        new Notification(`⏰ ${habitName}`, {
+          body: `Reminder: ${goalText}`,
+          icon: "https://cdn-icons-png.flaticon.com/512/3062/3062634.png"
+        });
+      } else if (Notification.permission !== "denied") {
+        Notification.requestPermission().then(permission => {
+          if (permission === "granted") {
+            sendHabitNotification(habitName, goalText);
+          }
+        });
+      }
+    }
+
+    function checkMissedCompletion(habit) {
+      setTimeout(() => {
+        onAuthStateChanged(auth, async (user) => {
+          if (!user) return;
+
+          const snapshot = await get(child(ref(db), `users/${user.uid}/habits`));
+          if (snapshot.exists()) {
+            const habits = snapshot.val();
+            Object.values(habits).forEach(h => {
+              if (h.name === habit.name && !h.completedToday) {
+                sendHabitNotification("⚠ Missed Goal", `You missed: ${habit.name} (${habit.goal})`);
+              }
+            });
+          }
+        });
+      }, 60 * 1000); 
+    }
+
+    onAuthStateChanged(auth, (user) => {
+      if (!user) {
+        alert("Please log in to add habits.");
+        window.location.href = "login.html";
+        return;
+      }
+
+      form.addEventListener("submit", async (e) => {
+        e.preventDefault();
+
+        const habit = {
+          name: document.getElementById("habitName").value.trim(),
+          category: document.getElementById("category").value,
+          goal: goalSelect.value === "Custom" ? customGoalInput.value.trim() : goalSelect.value,
+          steps: document.getElementById("steps").value ? parseInt(document.getElementById("steps").value) : null,
+          type: document.getElementById("type").value,
+          reminder: document.getElementById("reminder").value || null,
+          createdAt: Date.now(),
+          completedToday: false,
+          weeklyData: {}
+        };
+
+        try {
+          const habitRef = ref(db, `users/${user.uid}/habits`);
+          await push(habitRef, habit);
+
+          messageDiv.textContent = "Habit added successfully!";
+          messageDiv.className = "success";
+          form.reset();
+          customGoalInput.style.display = "none";
+
+          scheduleHabitReminder(habit); 
+        } catch (err) {
+          messageDiv.textContent = "Error: " + err.message;
+          messageDiv.className = "error";
+        }
+      });
+    });
+  </script>
+</body>
+</html>

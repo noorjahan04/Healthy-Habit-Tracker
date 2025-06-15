@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Healthy Habit Tracker Dashboard</title>
+  <link rel="stylesheet" href="dashboard.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+</head>
+<body>
+
+  <div id="reminderModal" class="modal-overlay">
+    <div class="modal-content">
+      <h3>⏰ Habit Reminder</h3>
+      <p id="reminderText">You have pending habits!</p>
+      <button id="closeModalBtn">Got it!</button>
+    </div>
+  </div>
+
+  <div class="dashboard-container">
+    
+    <div class="sidebar">
+      <div>
+        <h2>HealthyTrack</h2>
+        <a href="home.html"><i class="fas fa-home"></i> Home</a>
+        <a href="dashboard.html"><i class="fas fa-chart-line"></i> Dashboard</a>
+        <a href="add-habit.html"><i class="fas fa-plus-circle"></i> Add Habit</a>
+        <a href="analytics.html"><i class="fas fa-chart-pie"></i> Analytics</a>
+        <a href="mood.html"><i class="fas fa-smile"></i> Mood Tracker</a>
+        <a href="chatboat.html"><i class="fas fa-robot"></i> Wellness Buddy</a>
+
+      </div>
+      <div class="sidebar-buttons">
+        <button class="download-btn" onclick="downloadPDF()"><i class="fas fa-download"></i> Download PDF</button>
+        <button class="logout-btn" onclick="logoutUser()"><i class="fas fa-sign-out-alt"></i> Logout</button>
+      </div>
+    </div>
+
+    <div class="main-content">
+
+      <div class="topbar-wrapper">
+        <div class="topbar">
+          <h1>Healthy Habits Dashboard</h1>
+          <div class="right-side">
+            <button class="toggle-theme" id="themeToggle" title="Toggle Light/Dark Mode">
+              <i class="fas fa-adjust"></i>
+            </button>
+           <div class="profile-icon" title="Your profile">
+             <i class="fas fa-user-circle"></i>
+          </div>
+          </div>
+        </div>
+      </div>
+
+      <div style="height: 110px;"></div>
+
+      <div class="content-wrapper">
+        <section class="widget" id="wellnessScore">
+          <h3>Wellness Score</h3>
+          <div class="progress-container">
+            <div id="progressFill"></div>
+          </div>
+          <p id="progressPercent">0%</p>
+          <canvas id="wellnessChart" width="40" height="20"></canvas>
+        </section>
+
+        <section class="widget">
+          <h3>Your Habits</h3>
+          <ul id="habit-list">
+            <li>Loading habits...</li>
+          </ul>
+        </section>
+
+        <section class="widget" id="moodHistorySection">
+          <h3>Mood History</h3>
+          <p id="mood-summary">Summary: Loading...</p>
+          <p id="mood-loading-text">Loading...</p>
+          <ul id="mood-history-list" class="mood-history-list"></ul>
+        </section>
+
+        <section class="widget" id="aiSuggestions">
+          <h3>🤖 AI Suggestions</h3>
+          <ul id="suggestion-list">
+            <li>Loading personalized tips...</li>
+          </ul>
+          <button id="replayAiBtn" style="margin-top: 10px;">🔁 Replay Suggestions</button>
+        </section>
+
+        <footer class="footer">
+          <p><strong>Stay Consistent! 💪</strong></p>
+          <div class="share-buttons">
+            <a href="https://wa.me/?text=Check%20out%20my%20healthy%20habits!" target="_blank" title="Share on WhatsApp"><i class="fab fa-whatsapp"></i></a>
+            <a href="https://www.facebook.com/sharer/sharer.php?u=https://yourapp.com" target="_blank" title="Share on Facebook"><i class="fab fa-facebook"></i></a>
+            <a href="https://twitter.com/intent/tweet?text=I'm%20tracking%20my%20healthy%20habits!" target="_blank" title="Share on Twitter"><i class="fab fa-twitter"></i></a>
+          </div>
+        </footer>
+      </div>
+    </div>
+  </div>
+
+  <audio id="aiSound" src="silence.mp3" preload="auto" style="display: none;"></audio>
+
+  <script type="module" src="auth.js"></script>
+  <script type="module" src="dashboard.js"></script>
+  <script type="module" src="analytics.js"></script>
+  <script type="module" src="reminder.js"></script>
+  <script type="module" src="export.js"></script>
+  <script type="module" src="mood-history.js"></script>
+  <script type="module" src="ai.js"></script>
+  <script type="module">
+    import { signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+    import { auth } from './auth.js';
+
+    window.logoutUser = function () {
+      signOut(auth)
+        .then(() => {
+          alert("You have been logged out.");
+          window.location.href = "index.html";
+        })
+        .catch((error) => {
+          console.error("Logout failed:", error);
+          alert("Logout error.");
+        });
+    };
+  </script>
+</body>
+</html>

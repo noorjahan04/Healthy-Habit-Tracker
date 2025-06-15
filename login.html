@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Healthy-habit- Login</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', Arial, sans-serif;
+      background: linear-gradient(120deg, #f8c6f9 0%, #b6aaff 100%);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .container {
+      background: #fff;
+      border-radius: 20px;
+      box-shadow: 0 8px 32px 0 rgba(31,38,135,0.18);
+      display: flex;
+      max-width: 900px;
+      width: 95%;
+      overflow: hidden;
+    }
+    .left-section {
+      background: linear-gradient(120deg, #e7baff 0%, #f8c6f9 100%);
+      color: #6d2fa6;
+      padding: 48px 36px;
+      flex: 1.2;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+    .left-section h1 {
+      margin-bottom: 10px;
+      font-size: 2.3rem;
+      font-weight: 700;
+      letter-spacing: 1px;
+      color: #8d3bbf;
+    }
+    .left-section h2 {
+      margin: 0 0 18px 0;
+      font-size: 1.3rem;
+      font-weight: 500;
+      color: #7c3bbf;
+    }
+    .left-section img {
+      width: 270px;
+      margin: 18px 0 18px 0;
+      border-radius: 12px;
+      box-shadow: 0 4px 16px rgba(24,90,157,0.10);
+    }
+    .left-section p {
+      font-size: 1.05rem;
+      color: #6d2fa6;
+      text-align: center;
+      margin-bottom: 0;
+      margin-top: 18px;
+    }
+    .right-section {
+      background: #fff;
+      flex: 1;
+      padding: 48px 36px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      border-radius: 0 20px 20px 0;
+      box-shadow: 0 0 0 0;
+    }
+    .right-section h3 {
+      margin-bottom: 24px;
+      color: #8d3bbf;
+      font-size: 1.7rem;
+      font-weight: 700;
+      text-align: center;
+    }
+    .form-group {
+      margin-bottom: 18px;
+    }
+    .form-group label {
+      display: block;
+      margin-bottom: 6px;
+      color: #333;
+      font-weight: 500;
+    }
+    .form-group input {
+      width: 100%;
+      padding: 10px 12px;
+      border: 1px solid #bdbdbd;
+      border-radius: 6px;
+      font-size: 1rem;
+      outline: none;
+      transition: border 0.2s;
+    }
+    .form-group input:focus {
+      border-color: #8d3bbf;
+    }
+    .login-btn, .signup-btn {
+      width: 100%;
+      padding: 12px;
+      background: linear-gradient(90deg, #8d3bbf 0%, #f8c6f9 100%);
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      font-size: 1.1rem;
+      font-weight: 600;
+      cursor: pointer;
+      margin-top: 10px;
+      transition: background 0.2s;
+    }
+    .login-btn:hover, .signup-btn:hover {
+      background: linear-gradient(90deg, #f8c6f9 0%, #8d3bbf 100%);
+    }
+    .toggle-link {
+      margin-top: 18px;
+      text-align: center;
+      font-size: 0.98rem;
+    }
+    .toggle-link a {
+      color: #8d3bbf;
+      text-decoration: none;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .google-btn {
+      margin-top: 18px;
+      width: 100%;
+      background: #fff;
+      color: #444;
+      border: 1px solid #8d3bbf;
+      border-radius: 6px;
+      font-size: 1.05rem;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      padding: 10px 0;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .google-btn:hover {
+      background: #f8c6f9;
+    }
+    .google-btn img {
+      width: 22px;
+      height: 22px;
+    }
+    @media (max-width: 700px) {
+      .container {
+        flex-direction: column;
+        max-width: 98vw;
+      }
+      .left-section, .right-section {
+        padding: 32px 18px;
+        border-radius: 0;
+      }
+      .left-section img {
+        width: 160px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="left-section">
+      <h1>Healthy Habit Tracker</h1>
+      <img src="https://assistinghands.com/wp-content/uploads/2021/12/Healthy-Habits.jpeg" alt="Healthy Habits">
+      <h2>Welcome to Healthy Habit Tracker!</h2>
+      <p>
+        Build positive habits and stay motivated.<br>
+        Track your progress daily.
+      </p>
+    </div>
+    <div class="right-section">
+      <h3 id="form-title">Login</h3>
+      <form id="login-form">
+        <div class="form-group">
+          <label for="login-email">Enter Email or Username</label>
+          <input type="text" id="login-email" placeholder="Username or Email" required>
+        </div>
+        <div class="form-group">
+          <label for="login-password">Enter Password</label>
+          <input type="password" id="login-password" placeholder="Password" required>
+        </div>
+        <button type="submit" class="login-btn">Login</button>
+      </form>
+      <form id="signup-form" style="display:none;">
+        <div class="form-group">
+          <label for="signup-email">Email</label>
+          <input type="email" id="signup-email" placeholder="Email" required>
+        </div>
+        <div class="form-group">
+          <label for="signup-username">Username</label>
+          <input type="text" id="signup-username" placeholder="Username" required>
+        </div>
+        <div class="form-group">
+          <label for="signup-password">Password</label>
+          <input type="password" id="signup-password" placeholder="Password" required>
+        </div>
+        <button type="submit" class="signup-btn">Sign Up</button>
+      </form>
+      <div class="toggle-link">
+        <span id="toggle-msg">Don't have an account?</span>
+        <a id="toggle-link" href="#">Register here</a>
+      </div>
+      <button class="google-btn" id="google-signin-btn">
+        <img src="https://static.dezeen.com/uploads/2025/05/sq-google-g-logo-update_dezeen_2364_col_0-852x852.jpg" alt="Google Logo">
+        Sign in with Google
+      </button>
+    </div>
+  </div>
+
+  <script type="module">
+    import { login, signup, googleLogin } from './auth.js';
+
+    window.toggleForm = function () {
+      const loginForm = document.getElementById('login-form');
+      const signupForm = document.getElementById('signup-form');
+      const formTitle = document.getElementById('form-title');
+      const toggleMsg = document.getElementById('toggle-msg');
+      const toggleLink = document.getElementById('toggle-link');
+      if (loginForm.style.display !== 'none') {
+        loginForm.style.display = 'none';
+        signupForm.style.display = 'block';
+        formTitle.textContent = 'Sign Up';
+        toggleMsg.textContent = 'Already have an account?';
+        toggleLink.textContent = 'Login here';
+      } else {
+        loginForm.style.display = 'block';
+        signupForm.style.display = 'none';
+        formTitle.textContent = 'Login';
+        toggleMsg.textContent = "Don't have an account?";
+        toggleLink.textContent = 'Register here';
+      }
+    };
+
+    document.getElementById('toggle-link').addEventListener('click', function(e) {
+      e.preventDefault();
+      toggleForm();
+    });
+
+    document.getElementById('login-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const email = document.getElementById('login-email').value;
+      const password = document.getElementById('login-password').value;
+      try {
+        await login(email, password);
+        alert('Login successful!');
+        window.location.href = 'home.html';
+      } catch (error) {
+        alert('Login failed: ' + error.message);
+      }
+    });
+
+    document.getElementById('signup-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const email = document.getElementById('signup-email').value;
+      const password = document.getElementById('signup-password').value;
+      try {
+        await signup(email, password);
+        alert('Signup successful!');
+        toggleForm();
+      } catch (error) {
+        alert('Signup failed: ' + error.message);
+      }
+    });
+
+    document.getElementById('google-signin-btn').addEventListener('click', async () => {
+      try {
+        await googleLogin();
+        alert('Google login successful!');
+        window.location.href = 'dashboard.html';
+      } catch (error) {
+        alert('Google login failed: ' + error.message);
+      }
+    });
+  </script>
+</body>
+</html>

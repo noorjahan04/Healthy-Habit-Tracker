@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Analytics | Healthy Habit Tracker</title>
+  <link rel="stylesheet" href="dashboard.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    .widget {
+      background-color: #fff;
+      padding: 1.5rem;
+      border-radius: 20px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+      margin-top: 1rem;
+    }
+    .chart-tabs {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 20px;
+      gap: 10px;
+    }
+    .chart-tabs button {
+      padding: 10px 20px;
+      border: none;
+      background-color: #f0f0f0;
+      border-radius: 10px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: background 0.3s ease;
+    }
+    .chart-tabs button.active,
+    .chart-tabs button:hover {
+      background-color: #8d3bbf;
+      color: white;
+    }
+    canvas {
+      max-width: 100%;
+      height: auto;
+    }
+    .analytics-summary {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-around;
+      margin: 1rem 0;
+      gap: 1rem;
+    }
+    .summary-box {
+      flex: 1 1 200px;
+      background: #f3e5f5;
+      padding: 1.2rem;
+      border-radius: 15px;
+      text-align: center;
+      color: #4a148c;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    }
+    .summary-box h4 {
+      margin-bottom: 0.5rem;
+      font-size: 1rem;
+      color: #6a1b9a;
+    }
+    .summary-box .score.danger {
+      color: red;
+      animation: blink 1s infinite;
+    }
+    @keyframes blink {
+      0% { opacity: 1; }
+      50% { opacity: 0.3; }
+      100% { opacity: 1; }
+    }
+  </style>
+</head>
+<body>
+  <div class="dashboard-container">
+    
+    <div class="sidebar">
+      <div>
+        <h2>HealthyTrack</h2>
+        <a href="home.html"><i class="fas fa-home"></i> Home</a>
+        <a href="dashboard.html"><i class="fas fa-chart-line"></i> Dashboard</a>
+        <a href="add-habit.html"><i class="fas fa-plus-circle"></i> Add Habit</a>
+    
+        <a href="analytics.html" class="active"><i class="fas fa-chart-line"></i> Analytics</a>
+        <a href="mood.html"><i class="fas fa-smile"></i> Mood Tracker</a>
+        <a href="chatboat.html"><i class="fas fa-robot"></i> Wellness Buddy</a>
+
+      </div>
+      <div class="sidebar-buttons">
+        <button class="logout-btn" onclick="logoutUser()"><i class="fas fa-sign-out-alt"></i> Logout</button>
+      </div>
+    </div>
+
+    <div class="main-content">
+      <div class="content-wrapper">
+
+        <div class="topbar">
+          <h1>Habit Analytics</h1>
+          <div class="right-side">
+            <button class="toggle-theme" id="themeToggle" title="Toggle Light/Dark Mode">
+              <i class="fas fa-adjust"></i>
+            </button>
+            <div class="profile-pic" id="profilePic"></div>
+          </div>
+        </div>
+
+    
+        <div class="analytics-summary">
+          <div class="summary-box">
+            <h4>Total Habits</h4>
+            <div id="totalHabits">--</div>
+          </div>
+          <div class="summary-box">
+            <h4>Best Habit</h4>
+            <div id="bestHabit">--</div>
+          </div>
+          <div class="summary-box">
+            <h4>Worst Habit</h4>
+            <div id="worstHabit">--</div>
+          </div>
+        </div>
+  
+        <section class="widget">
+          <canvas id="analyticsChart" width="600" height="300"></canvas>
+        </section>
+
+        <footer class="footer">
+          <p><strong>Track it to improve it! 💡</strong></p>
+        </footer>
+      </div>
+    </div>
+  </div>
+  <script type="module" src="auth.js"></script>
+  <script type="module" src="analytics.js"></script>
+</body>
+</html>

@@ -1,0 +1,113 @@
+{
+  "users": {
+    "eZe38sOiyjb4UhLig2HUf2N1twn2": {
+      "profile": {
+        "name": "Noor Jahan",
+        "email": "noor@example.com",
+        "photoURL": "https://example.com/your-updated-photo.jpg"
+      },
+      "habits": {
+        "habit1": {
+          "name": "Drink Water",
+          "category": "Hydration",
+          "completedToday": true,
+          "weeklyData": [1, 1, 1, 1, 1, 0, 0]
+        },
+        "habit2": {
+          "name": "Exercise",
+          "category": "Fitness",
+          "completedToday": false,
+          "weeklyData": [1, 1, 0, 1, 1, 0, 0]
+        },
+        "habit3": {
+          "name": "Meditation",
+          "category": "Mindfulness",
+          "completedToday": true,
+          "weeklyData": [1, 1, 1, 1, 0, 0, 0]
+        },
+        "habit4": {
+          "name": "Sleep 8 hours",
+          "category": "Sleep",
+          "completedToday": false,
+          "weeklyData": [1, 1, 1, 0, 1, 0, 0]
+        },
+        "habit5": {
+          "name": "Read Book",
+          "category": "Learning",
+          "completedToday": true,
+          "weeklyData": [1, 0, 1, 1, 1, 0, 0]
+        },
+        "habit6": {
+          "name": "Morning Yoga",
+          "category": "Fitness",
+          "goal": "15 min session",
+          "type": "Daily",
+          "reminder": "06:30",
+          "completedToday": false,
+          "weeklyData": [0, 0, 0, 0, 0, 0, 0]
+        },
+        "habit7": {
+          "name": "Fruit Snack",
+          "category": "Nutrition",
+          "goal": "2 fruits/day",
+          "type": "Daily",
+          "reminder": "11:00",
+          "completedToday": false,
+          "weeklyData": [0, 0, 0, 0, 0, 0, 0]
+        },
+        "habit8": {
+          "name": "Gratitude Journal",
+          "category": "Mindfulness",
+          "goal": "Write 3 things",
+          "type": "Daily",
+          "reminder": "21:00",
+          "completedToday": false,
+          "weeklyData": [0, 0, 0, 0, 0, 0, 0]
+        },
+        "habit9": {
+          "name": "Deep Sleep Routine",
+          "category": "Sleep",
+          "goal": "Sleep by 10 PM",
+          "type": "Daily",
+          "reminder": "22:00",
+          "completedToday": false,
+          "weeklyData": [0, 0, 0, 0, 0, 0, 0]
+        },
+        "habit10": {
+          "name": "Online Course",
+          "category": "Learning",
+          "goal": "1 lesson/day",
+          "type": "Daily",
+          "reminder": "17:00",
+          "completedToday": false,
+          "weeklyData": [0, 0, 0, 0, 0, 0, 0]
+        }
+      },
+      "moods": {
+        "mood1": {
+          "mood": "😊",
+          "note": "Feeling focused and positive."
+        },
+        "mood2": {
+          "mood": "😴",
+          "note": "Slept late yesterday."
+        },
+        "mood3": {
+          "mood": "😌",
+          "note": "Had a peaceful day."
+        },
+        "mood4": {
+          "mood": "😄",
+          "note": "Feeling fresh today!"
+        }
+      },
+      "stats": {
+        "wellnessScore": 82,
+        "currentStreak": 5,
+        "bestStreak": 8,
+        "missedCount": 1,
+        "totalHabits": 10
+      }
+    }
+  }
+}
