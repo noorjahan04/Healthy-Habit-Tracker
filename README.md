@@ -120,4 +120,3 @@ From setting personalized goals to analyzing your wellness score and receiving a
 - 🔐 OTP Login / Two-Factor Authentication
 - 📡 Offline mode with local storage sync
 
----
