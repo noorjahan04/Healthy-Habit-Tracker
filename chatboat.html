@@ -2,182 +2,859 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Wellness Buddy Chat</title>
+  <title>Wellness Buddy - Your AI Health Companion</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
-    body {
+    * {
       margin: 0;
-      font-family: 'Segoe UI', sans-serif;
-      background: linear-gradient(135deg, #8d3bbf 0%, #f8c6f9 100%);
-      color: #fff;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --primary: #8d3bbf;
+      --primary-light: #a764c2;
+      --secondary: #f8c6f9;
+      --accent: #6aedc1;
+      --dark: #1e1e2f;
+      --light: #ffffff;
+      --gray-light: #f4f6f9;
+      --card-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+      --transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.1);
+    }
+
+    body {
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      background: linear-gradient(135deg, #f5f7fa 0%, #e4e8f0 100%);
+      color: #333;
+      height: 100vh;
+      overflow: hidden;
       display: flex;
       flex-direction: column;
-      height: 100vh;
     }
 
-    header {
+    body.dark-mode {
+      background: linear-gradient(135deg, #1e1e2f 0%, #2d2d3c 100%);
+      color: #e0e0e0;
+    }
+
+    /* Header */
+    .header {
+      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+      padding: 1rem 2rem;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
       position: relative;
-      background: rgba(0, 0, 0, 0.2);
-      padding: 1rem 2.5rem;
-      text-align: center;
+      z-index: 100;
+    }
+
+    .header-content {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .bot-avatar {
+      width: 45px;
+      height: 45px;
+      background: linear-gradient(135deg, var(--accent), var(--secondary));
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
       font-size: 1.5rem;
-      font-weight: bold;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+      color: var(--dark);
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
     }
 
-    .icon {
-      position: absolute;
-      top: 1rem;
+    .header-text h1 {
       font-size: 1.4rem;
+      font-weight: 700;
+      margin-bottom: 2px;
+      color: white;
+    }
+
+    .header-text p {
+      font-size: 0.9rem;
+      opacity: 0.9;
+      color: rgba(255, 255, 255, 0.9);
+    }
+
+    .header-actions {
+      display: flex;
+      gap: 15px;
+      align-items: center;
+    }
+
+    .theme-toggle, .back-btn {
+      background: rgba(255, 255, 255, 0.2);
+      border: none;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      color: white;
+      font-size: 1.2rem;
       cursor: pointer;
+      transition: var(--transition);
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
 
-    .profile-icon {
-      left: 1rem;
+    .theme-toggle:hover, .back-btn:hover {
+      background: rgba(255, 255, 255, 0.3);
+      transform: scale(1.1);
     }
 
-    .settings-icon {
-      right: 1rem;
+    /* Chat Container */
+    .chat-container {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      max-width: 900px;
+      width: 100%;
+      margin: 0 auto;
+      background: var(--light);
+      box-shadow: var(--card-shadow);
+      overflow: hidden;
+      position: relative;
     }
 
-    #chatbox {
+    body.dark-mode .chat-container {
+      background: var(--dark);
+    }
+
+    /* Chat Messages */
+    .chat-messages {
       flex: 1;
       overflow-y: auto;
-      padding: 1rem;
+      padding: 20px;
       display: flex;
       flex-direction: column;
-      gap: 0.5rem;
+      gap: 20px;
+      background: var(--gray-light);
     }
 
-    .msg {
-      padding: 10px 14px;
-      max-width: 80%;
-      border-radius: 20px;
-      word-wrap: break-word;
-      font-size: 1rem;
+    body.dark-mode .chat-messages {
+      background: #2d2d3c;
     }
 
-    .user {
-      align-self: flex-end;
-      background: #dfffcf;
-      color: #000;
-    }
-
-    .bot {
-      align-self: flex-start;
-      background: #ffffffbb;
-      color: #000;
-    }
-
-    #input-area {
+    /* Message Styles */
+    .message {
       display: flex;
-      padding: 1rem;
-      background: rgba(255,255,255,0.1);
-      backdrop-filter: blur(6px);
-      box-shadow: 0 -2px 5px rgba(0,0,0,0.2);
+      gap: 12px;
+      animation: fadeIn 0.3s ease-out;
+      max-width: 85%;
     }
 
-    #input {
+    .user-message {
+      align-self: flex-end;
+      flex-direction: row-reverse;
+    }
+
+    .bot-message {
+      align-self: flex-start;
+    }
+
+    .message-avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+      flex-shrink: 0;
+      margin-top: 5px;
+    }
+
+    .user-avatar {
+      background: linear-gradient(135deg, var(--primary), var(--primary-light));
+      color: white;
+    }
+
+    .bot-avatar-small {
+      background: linear-gradient(135deg, var(--accent), #4cd7a0);
+      color: var(--dark);
+      font-weight: bold;
+    }
+
+    .message-content {
+      padding: 15px 20px;
+      border-radius: 18px;
+      position: relative;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      line-height: 1.5;
+    }
+
+    .user-message .message-content {
+      background: linear-gradient(135deg, var(--primary), var(--primary-light));
+      color: white;
+      border-bottom-right-radius: 4px;
+    }
+
+    .bot-message .message-content {
+      background: white;
+      color: #333;
+      border-bottom-left-radius: 4px;
+    }
+
+    body.dark-mode .bot-message .message-content {
+      background: #3a3a4f;
+      color: #e0e0e0;
+    }
+
+    .message-time {
+      font-size: 0.75rem;
+      opacity: 0.7;
+      margin-top: 5px;
+      text-align: right;
+    }
+
+    .user-message .message-time {
+      color: rgba(255, 255, 255, 0.8);
+    }
+
+    .bot-message .message-time {
+      color: #666;
+    }
+
+    body.dark-mode .bot-message .message-time {
+      color: #aaa;
+    }
+
+    /* Typing Indicator */
+    .typing-indicator {
+      display: flex;
+      gap: 5px;
+      padding: 15px 20px;
+      background: white;
+      border-radius: 18px;
+      width: fit-content;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    body.dark-mode .typing-indicator {
+      background: #3a3a4f;
+    }
+
+    .typing-dot {
+      width: 8px;
+      height: 8px;
+      background: var(--primary);
+      border-radius: 50%;
+      animation: typing 1.4s infinite ease-in-out;
+    }
+
+    .typing-dot:nth-child(1) { animation-delay: -0.32s; }
+    .typing-dot:nth-child(2) { animation-delay: -0.16s; }
+
+    /* Input Area */
+    .input-container {
+      padding: 20px;
+      background: var(--light);
+      border-top: 1px solid rgba(0, 0, 0, 0.1);
+      display: flex;
+      gap: 12px;
+      align-items: flex-end;
+    }
+
+    body.dark-mode .input-container {
+      background: var(--dark);
+      border-top-color: rgba(255, 255, 255, 0.1);
+    }
+
+    .input-wrapper {
       flex: 1;
-      padding: 10px 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    #messageInput {
+      flex: 1;
+      padding: 15px 20px;
+      border: 2px solid #e0e0e0;
+      border-radius: 25px;
+      font-size: 1rem;
+      outline: none;
+      transition: var(--transition);
+      background: var(--light);
+      color: #333;
+      resize: none;
+      min-height: 50px;
+      max-height: 120px;
+      line-height: 1.5;
+    }
+
+    body.dark-mode #messageInput {
+      background: #3a3a4f;
+      color: #e0e0e0;
+      border-color: #555;
+    }
+
+    #messageInput:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(141, 59, 191, 0.1);
+    }
+
+    .input-actions {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 10px;
+    }
+
+    .quick-actions {
+      display: flex;
+      gap: 10px;
+    }
+
+    .quick-btn {
+      padding: 6px 12px;
+      background: rgba(141, 59, 191, 0.1);
       border: none;
+      border-radius: 15px;
+      font-size: 0.85rem;
+      color: var(--primary);
+      cursor: pointer;
+      transition: var(--transition);
+      white-space: nowrap;
+    }
+
+    body.dark-mode .quick-btn {
+      background: rgba(141, 59, 191, 0.3);
+      color: var(--secondary);
+    }
+
+    .quick-btn:hover {
+      background: rgba(141, 59, 191, 0.2);
+      transform: translateY(-2px);
+    }
+
+    .char-count {
+      font-size: 0.8rem;
+      color: #666;
+    }
+
+    body.dark-mode .char-count {
+      color: #aaa;
+    }
+
+    .send-button {
+      width: 50px;
+      height: 50px;
+      background: linear-gradient(135deg, var(--primary), var(--primary-light));
+      border: none;
+      border-radius: 50%;
+      color: white;
+      font-size: 1.2rem;
+      cursor: pointer;
+      transition: var(--transition);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .send-button:hover:not(:disabled) {
+      transform: scale(1.1);
+      box-shadow: 0 5px 15px rgba(141, 59, 191, 0.3);
+    }
+
+    .send-button:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    /* Welcome Message */
+    .welcome-message {
+      text-align: center;
+      padding: 30px 20px;
+      background: linear-gradient(135deg, rgba(141, 59, 191, 0.1), rgba(106, 237, 193, 0.1));
       border-radius: 20px;
+      margin: 20px;
+      animation: fadeIn 0.5s ease-out;
+    }
+
+    body.dark-mode .welcome-message {
+      background: linear-gradient(135deg, rgba(141, 59, 191, 0.2), rgba(106, 237, 193, 0.2));
+    }
+
+    .welcome-message h2 {
+      color: var(--primary);
+      margin-bottom: 10px;
+      font-size: 1.5rem;
+    }
+
+    body.dark-mode .welcome-message h2 {
+      color: var(--secondary);
+    }
+
+    .welcome-message p {
+      color: #666;
+      margin-bottom: 15px;
       font-size: 1rem;
     }
 
-    button {
-      padding: 10px 18px;
-      margin-left: 10px;
-      border: none;
-      border-radius: 20px;
-      background: #fff;
-      color: #7b4397;
-      font-weight: bold;
+    body.dark-mode .welcome-message p {
+      color: #aaa;
+    }
+
+    /* Suggestions */
+    .suggestions {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 12px;
+      margin: 20px;
+    }
+
+    .suggestion-btn {
+      padding: 12px 15px;
+      background: white;
+      border: 2px solid #e0e0e0;
+      border-radius: 12px;
+      text-align: left;
       cursor: pointer;
-      transition: background 0.3s;
+      transition: var(--transition);
+      color: #333;
+      font-size: 0.95rem;
     }
 
-    button:hover {
+    body.dark-mode .suggestion-btn {
+      background: #3a3a4f;
+      border-color: #555;
+      color: #e0e0e0;
+    }
+
+    .suggestion-btn:hover {
+      border-color: var(--primary);
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    .suggestion-btn i {
+      margin-right: 8px;
+      color: var(--primary);
+    }
+
+    /* Animations */
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes typing {
+      0%, 60%, 100% { transform: translateY(0); }
+      30% { transform: translateY(-10px); }
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+      .header {
+        padding: 1rem;
+      }
+      
+      .header-text h1 {
+        font-size: 1.2rem;
+      }
+      
+      .message {
+        max-width: 95%;
+      }
+      
+      .suggestions {
+        grid-template-columns: 1fr;
+      }
+      
+      .quick-actions {
+        flex-wrap: wrap;
+      }
+      
+      .input-container {
+        padding: 15px;
+      }
+      
+      .chat-messages {
+        padding: 15px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .message-content {
+        padding: 12px 16px;
+        font-size: 0.95rem;
+      }
+      
+      .message-avatar {
+        width: 35px;
+        height: 35px;
+        font-size: 1rem;
+      }
+      
+      .send-button {
+        width: 45px;
+        height: 45px;
+      }
+      
+      #messageInput {
+        padding: 12px 16px;
+      }
+    }
+
+    /* Scrollbar Styling */
+    .chat-messages::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    .chat-messages::-webkit-scrollbar-track {
       background: #f1f1f1;
+      border-radius: 4px;
     }
 
-    @media (max-width: 600px) {
-      #input-area {
-        flex-direction: column;
-        gap: 0.5rem;
-      }
+    body.dark-mode .chat-messages::-webkit-scrollbar-track {
+      background: #2d2d3c;
+    }
 
-      button {
-        width: 100%;
-        margin-left: 0;
-      }
+    .chat-messages::-webkit-scrollbar-thumb {
+      background: var(--primary-light);
+      border-radius: 4px;
+    }
+
+    .chat-messages::-webkit-scrollbar-thumb:hover {
+      background: var(--primary);
     }
   </style>
 </head>
 <body>
+  <div class="header">
+    <div class="header-content">
+      <div class="bot-avatar">
+        <i class="fas fa-robot"></i>
+      </div>
+      <div class="header-text">
+        <h1>Wellness Buddy</h1>
+        <p>Your AI Health & Wellness Companion</p>
+      </div>
+    </div>
+    <div class="header-actions">
+      <button class="theme-toggle" id="themeToggle" title="Toggle theme">
+        <i class="fas fa-adjust"></i>
+      </button>
+      <button class="back-btn" onclick="goBack()" title="Go back">
+        <i class="fas fa-arrow-left"></i>
+      </button>
+    </div>
+  </div>
 
-<header>
-  <span class="icon profile-icon" onclick="openProfile()">👤</span>
-  💬 Talk to Wellness Buddy
-  <span class="icon settings-icon" onclick="openSettings()">⚙️</span>
-</header>
+  <div class="chat-container">
+    <div class="chat-messages" id="chatMessages">
+      <!-- Welcome message -->
+      <div class="welcome-message">
+        <h2>👋 Hello! I'm your Wellness Buddy</h2>
+        <p>I'm here to help you with health advice, habit tracking tips, mood support, and wellness guidance. How can I assist you today?</p>
+      </div>
 
-<div id="chatbox"></div>
+      <!-- Quick suggestions -->
+      <div class="suggestions">
+        <button class="suggestion-btn" onclick="sendSuggestion('Give me tips for better sleep')">
+          <i class="fas fa-moon"></i> Sleep Tips
+        </button>
+        <button class="suggestion-btn" onclick="sendSuggestion('How can I stay motivated to exercise?')">
+          <i class="fas fa-dumbbell"></i> Exercise Motivation
+        </button>
+        <button class="suggestion-btn" onclick="sendSuggestion('Healthy meal ideas for today')">
+          <i class="fas fa-apple-alt"></i> Meal Ideas
+        </button>
+        <button class="suggestion-btn" onclick="sendSuggestion('How to reduce stress and anxiety?')">
+          <i class="fas fa-spa"></i> Stress Relief
+        </button>
+      </div>
+    </div>
 
-<div id="input-area">
-  <input id="input" placeholder="Ask something...">
-  <button onclick="ask()">Send</button>
-</div>
+    <div class="input-container">
+      <div class="input-wrapper">
+        <textarea 
+          id="messageInput" 
+          placeholder="Ask me about health, habits, mood, or wellness..."
+          rows="1"
+          onkeydown="handleEnter(event)"
+        ></textarea>
+        <div class="input-actions">
+          <div class="quick-actions">
+            <button class="quick-btn" onclick="sendSuggestion('Track my water intake')">💧 Hydration</button>
+            <button class="quick-btn" onclick="sendSuggestion('Meditation techniques')">🧘 Meditation</button>
+            <button class="quick-btn" onclick="sendSuggestion('Daily habit suggestions')">📝 Habits</button>
+          </div>
+          <div class="char-count">
+            <span id="charCount">0/500</span>
+          </div>
+        </div>
+      </div>
+      <button class="send-button" id="sendButton" onclick="sendMessage()">
+        <i class="fas fa-paper-plane"></i>
+      </button>
+    </div>
+  </div>
 
-<script>
-  const API_KEY = "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";
+  <script>
+    const chatMessages = document.getElementById('chatMessages');
+    const messageInput = document.getElementById('messageInput');
+    const sendButton = document.getElementById('sendButton');
+    const charCount = document.getElementById('charCount');
+    const themeToggle = document.getElementById('themeToggle');
 
-  async function ask() {
-    const inputElem = document.getElementById("input");
-    const input = inputElem.value.trim();
-    if (!input) return;
+    // Theme toggle
+    themeToggle.addEventListener('click', () => {
+      document.body.classList.toggle('dark-mode');
+      localStorage.setItem('theme', document.body.classList.contains('dark-mode') ? 'dark' : 'light');
+    });
 
-    addMsg(input, "user");
-    inputElem.value = "";
-
-    try {
-      const res = await fetch("https://api.groq.com/openai/v1/chat/completions", {
-        method: "POST",
-        headers: {
-          "Authorization": `Bearer ${API_KEY}`,
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-          model: "llama3-8b-8192",
-          messages: [{ role: "user", content: input }]
-        })
-      });
-
-      const data = await res.json();
-      const reply = data.choices?.[0]?.message?.content || "Sorry, I didn't understand that.";
-      addMsg(reply, "bot");
-    } catch (err) {
-      console.error(err);
-      addMsg("Error connecting to chatbot service.", "bot");
+    // Check saved theme
+    if (localStorage.getItem('theme') === 'dark') {
+      document.body.classList.add('dark-mode');
     }
-  }
 
-  function addMsg(text, type) {
-    const div = document.createElement("div");
-    div.className = `msg ${type}`;
-    div.textContent = text;
-    document.getElementById("chatbox").appendChild(div);
-    div.scrollIntoView({ behavior: "smooth" });
-  }
+    // Go back function
+    function goBack() {
+      window.history.back();
+    }
 
-  function openProfile() {
-    alert("Profile settings coming soon!");
-  }
+    // Character count
+    messageInput.addEventListener('input', () => {
+      const count = messageInput.value.length;
+      charCount.textContent = `${count}/500`;
+      if (count > 500) {
+        charCount.style.color = '#f44336';
+        messageInput.style.borderColor = '#f44336';
+      } else {
+        charCount.style.color = '';
+        messageInput.style.borderColor = '';
+      }
+    });
 
-  function openSettings() {
-    alert("Settings coming soon!");
-  }
-</script>
+    // Auto-resize textarea
+    messageInput.addEventListener('input', function() {
+      this.style.height = 'auto';
+      this.style.height = (this.scrollHeight) + 'px';
+    });
 
+    // Handle Enter key (Shift+Enter for new line, Enter to send)
+    function handleEnter(event) {
+      if (event.key === 'Enter' && !event.shiftKey) {
+        event.preventDefault();
+        sendMessage();
+      }
+    }
+
+    // Send suggestion
+    function sendSuggestion(text) {
+      messageInput.value = text;
+      sendMessage();
+    }
+
+    // Add message to chat
+    function addMessage(text, sender, showTime = true) {
+      const messageDiv = document.createElement('div');
+      messageDiv.className = `message ${sender}-message`;
+      
+      const avatarDiv = document.createElement('div');
+      avatarDiv.className = `message-avatar ${sender}-avatar ${sender === 'bot' ? 'bot-avatar-small' : 'user-avatar'}`;
+      avatarDiv.innerHTML = sender === 'bot' ? '<i class="fas fa-robot"></i>' : '<i class="fas fa-user"></i>';
+      
+      const contentDiv = document.createElement('div');
+      contentDiv.className = 'message-content';
+      contentDiv.innerHTML = formatMessage(text);
+      
+      messageDiv.appendChild(avatarDiv);
+      messageDiv.appendChild(contentDiv);
+      
+      if (showTime) {
+        const timeDiv = document.createElement('div');
+        timeDiv.className = 'message-time';
+        const now = new Date();
+        timeDiv.textContent = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        messageDiv.appendChild(timeDiv);
+      }
+      
+      chatMessages.appendChild(messageDiv);
+      scrollToBottom();
+      
+      return messageDiv;
+    }
+
+    // Format message with basic markdown
+    function formatMessage(text) {
+      // Convert **bold** to <strong>
+      text = text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+      // Convert *italic* to <em>
+      text = text.replace(/\*(.*?)\*/g, '<em>$1</em>');
+      // Convert line breaks to <br>
+      text = text.replace(/\n/g, '<br>');
+      // Convert - list items
+      text = text.replace(/^- (.*?)(?=\n|$)/gm, '• $1<br>');
+      return text;
+    }
+
+    // Show typing indicator
+    function showTyping() {
+      const typingDiv = document.createElement('div');
+      typingDiv.className = 'message bot-message';
+      typingDiv.id = 'typingIndicator';
+      
+      const avatarDiv = document.createElement('div');
+      avatarDiv.className = 'message-avatar bot-avatar-small';
+      avatarDiv.innerHTML = '<i class="fas fa-robot"></i>';
+      
+      const contentDiv = document.createElement('div');
+      contentDiv.className = 'typing-indicator';
+      contentDiv.innerHTML = '<div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div>';
+      
+      typingDiv.appendChild(avatarDiv);
+      typingDiv.appendChild(contentDiv);
+      chatMessages.appendChild(typingDiv);
+      scrollToBottom();
+    }
+
+    // Hide typing indicator
+    function hideTyping() {
+      const typingIndicator = document.getElementById('typingIndicator');
+      if (typingIndicator) {
+        typingIndicator.remove();
+      }
+    }
+
+    // Scroll to bottom
+    function scrollToBottom() {
+      chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
+
+    // Local wellness responses database
+    const wellnessResponses = {
+      // Sleep related responses
+      sleep: [
+        "**For better sleep quality:** Try maintaining a consistent sleep schedule, even on weekends. Create a relaxing bedtime routine, avoid screens 1 hour before bed, and ensure your bedroom is cool, dark, and quiet.",
+        "**Sleep hygiene tips:** Establish a regular sleep-wake cycle, limit caffeine after 2 PM, avoid heavy meals before bedtime, and consider relaxation techniques like deep breathing or meditation.",
+        "**To improve sleep quality:** Keep your bedroom temperature around 65°F (18°C), use comfortable bedding, and try white noise if you're sensitive to sounds. Regular exercise also helps, but avoid intense workouts close to bedtime."
+      ],
+      
+      // Exercise related responses
+      exercise: [
+        "**For exercise motivation:** Set specific, achievable goals, find activities you enjoy, track your progress, and consider finding a workout buddy for accountability.",
+        "**Stay motivated by:** Varying your workouts, celebrating small victories, focusing on how exercise makes you feel (not just looks), and setting realistic expectations.",
+        "**Exercise recommendations:** Start with just 10 minutes a day, incorporate movement into daily activities (take stairs, walk during calls), and remember that consistency is more important than intensity."
+      ],
+      
+      // Nutrition related responses
+      nutrition: [
+        "**Healthy meal ideas:** Try a colorful salad with lean protein, vegetable stir-fry with tofu, or grilled fish with roasted vegetables. Remember to include plenty of fruits and vegetables.",
+        "**Nutrition tips:** Focus on whole foods, stay hydrated, practice mindful eating, and aim for balanced meals with protein, healthy fats, and complex carbohydrates.",
+        "**For healthy eating:** Plan meals ahead, include a variety of colorful vegetables, choose whole grains over refined ones, and listen to your body's hunger and fullness cues."
+      ],
+      
+      // Stress related responses
+      stress: [
+        "**To reduce stress:** Practice deep breathing exercises, take short breaks throughout the day, maintain a gratitude journal, and ensure you're getting enough sleep.",
+        "**Stress management techniques:** Try progressive muscle relaxation, mindfulness meditation, regular physical activity, and maintaining social connections.",
+        "**For anxiety relief:** Limit caffeine and alcohol, practice grounding techniques (5-4-3-2-1 method), create a worry time, and consider talking to a professional if needed."
+      ],
+      
+      // Habit related responses
+      habit: [
+        "**Building good habits:** Start small, attach new habits to existing routines, track your progress, and reward yourself for consistency.",
+        "**Habit formation tips:** Make habits obvious (visible cues), attractive (pair with something enjoyable), easy (reduce friction), and satisfying (immediate rewards).",
+        "**Daily wellness habits:** Drink water first thing in the morning, take a 5-minute walk after meals, practice 2 minutes of gratitude daily, and do a quick stretch every hour."
+      ],
+      
+      // General wellness responses
+      general: [
+        "**Overall wellness:** Remember to balance physical health with mental wellbeing. Stay connected with loved ones, find purpose in daily activities, and practice self-compassion.",
+        "**Wellness journey:** Progress, not perfection, is what matters. Small consistent actions lead to big changes over time.",
+        "**Health reminder:** Always consult healthcare professionals for personalized medical advice. These tips are for general wellness education only."
+      ],
+      
+      // Hydration responses
+      hydration: [
+        "**Hydration tips:** Aim for 8-10 glasses of water daily, carry a reusable water bottle, add lemon or cucumber for flavor, and drink water before meals.",
+        "**Water tracking:** Use apps to remind you, track your intake in your habit tracker, and include water-rich foods like watermelon and cucumber in your diet.",
+        "**Signs of good hydration:** Clear or light yellow urine, moist mouth, and good energy levels throughout the day."
+      ],
+      
+      // Meditation responses
+      meditation: [
+        "**Meditation techniques:** Start with just 5 minutes daily, focus on your breath, use guided meditation apps, and find a quiet comfortable space.",
+        "**Mindfulness practices:** Try body scan meditation, loving-kindness meditation, walking meditation, or simply paying attention to your senses throughout the day.",
+        "**Benefits of meditation:** Reduced stress, improved focus, better emotional regulation, and enhanced self-awareness."
+      ]
+    };
+
+    // Send message with local responses
+    async function sendMessage() {
+      const message = messageInput.value.trim();
+      if (!message || message.length > 500) return;
+      
+      // Clear input
+      messageInput.value = '';
+      messageInput.style.height = 'auto';
+      
+      // Disable send button and show typing
+      sendButton.disabled = true;
+      sendButton.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i>';
+      
+      // Add user message
+      addMessage(message, 'user');
+      
+      // Show typing indicator
+      showTyping();
+      
+      // Simulate API delay (1.5 seconds)
+      setTimeout(() => {
+        hideTyping();
+        
+        const messageLower = message.toLowerCase();
+        let response = "";
+        
+        // Keyword matching for responses
+        if (messageLower.includes('sleep') || messageLower.includes('bed') || messageLower.includes('rest') || messageLower.includes('tired')) {
+          response = wellnessResponses.sleep[Math.floor(Math.random() * wellnessResponses.sleep.length)];
+        } else if (messageLower.includes('exercise') || messageLower.includes('workout') || messageLower.includes('gym') || messageLower.includes('fitness')) {
+          response = wellnessResponses.exercise[Math.floor(Math.random() * wellnessResponses.exercise.length)];
+        } else if (messageLower.includes('food') || messageLower.includes('meal') || messageLower.includes('eat') || messageLower.includes('nutrition') || messageLower.includes('diet')) {
+          response = wellnessResponses.nutrition[Math.floor(Math.random() * wellnessResponses.nutrition.length)];
+        } else if (messageLower.includes('stress') || messageLower.includes('anxiety') || messageLower.includes('worry') || messageLower.includes('overwhelm')) {
+          response = wellnessResponses.stress[Math.floor(Math.random() * wellnessResponses.stress.length)];
+        } else if (messageLower.includes('habit') || messageLower.includes('routine') || messageLower.includes('daily') || messageLower.includes('consist')) {
+          response = wellnessResponses.habit[Math.floor(Math.random() * wellnessResponses.habit.length)];
+        } else if (messageLower.includes('water') || messageLower.includes('hydrat') || messageLower.includes('drink') || messageLower.includes('thirst')) {
+          response = wellnessResponses.hydration[Math.floor(Math.random() * wellnessResponses.hydration.length)];
+        } else if (messageLower.includes('meditat') || messageLower.includes('mindful') || messageLower.includes('calm') || messageLower.includes('breathe')) {
+          response = wellnessResponses.meditation[Math.floor(Math.random() * wellnessResponses.meditation.length)];
+        } else if (messageLower.includes('hello') || messageLower.includes('hi') || messageLower.includes('hey') || messageLower.includes('greet')) {
+          response = "Hello! I'm your Wellness Buddy. I can help you with sleep tips, exercise motivation, nutrition advice, stress management, habit building, and general wellness guidance. What would you like to know about today?";
+        } else if (messageLower.includes('thank') || messageLower.includes('appreciate') || messageLower.includes('helpful')) {
+          response = "You're welcome! I'm glad I could help. Remember, small consistent steps lead to big wellness improvements. Is there anything else you'd like to know about?";
+        } else {
+          response = wellnessResponses.general[Math.floor(Math.random() * wellnessResponses.general.length)];
+        }
+        
+        addMessage(response, 'bot');
+        
+        // Re-enable send button
+        sendButton.disabled = false;
+        sendButton.innerHTML = '<i class="fas fa-paper-plane"></i>';
+      }, 1500);
+    }
+
+    // Add initial greeting
+    setTimeout(() => {
+      addMessage("Welcome! I'm your Wellness Buddy. I can help you with health tips, habit tracking advice, mood support, and general wellness questions. What would you like to know about today?", 'bot', false);
+    }, 500);
+
+    // Focus on input
+    messageInput.focus();
+  </script>
 </body>
 </html>

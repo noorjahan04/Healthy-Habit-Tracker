@@ -4,10 +4,10 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Healthy Habit Tracker Dashboard</title>
-  <link rel="stylesheet" href="dashboard.css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <link rel="stylesheet" href="dashboard.css" />
 </head>
 <body>
 
@@ -19,81 +19,168 @@
     </div>
   </div>
 
+  <!-- Mobile Hamburger Menu -->
+  <button class="mobile-menu-toggle" id="mobileMenuToggle">
+    <i class="fas fa-bars"></i>
+  </button>
+
   <div class="dashboard-container">
     
-    <div class="sidebar">
-      <div>
-        <h2>HealthyTrack</h2>
-        <a href="home.html"><i class="fas fa-home"></i> Home</a>
-        <a href="dashboard.html"><i class="fas fa-chart-line"></i> Dashboard</a>
-        <a href="add-habit.html"><i class="fas fa-plus-circle"></i> Add Habit</a>
-        <a href="analytics.html"><i class="fas fa-chart-pie"></i> Analytics</a>
-        <a href="mood.html"><i class="fas fa-smile"></i> Mood Tracker</a>
-        <a href="chatboat.html"><i class="fas fa-robot"></i> Wellness Buddy</a>
-
-      </div>
-      <div class="sidebar-buttons">
-        <button class="download-btn" onclick="downloadPDF()"><i class="fas fa-download"></i> Download PDF</button>
-        <button class="logout-btn" onclick="logoutUser()"><i class="fas fa-sign-out-alt"></i> Logout</button>
+    <!-- Sidebar -->
+    <div class="sidebar" id="sidebar">
+      <div class="sidebar-content">
+        <div class="sidebar-header">
+          <h2><i class="fas fa-heartbeat"></i> HealthyTrack</h2>
+          <p class="sidebar-subtitle">Your Wellness Companion</p>
+        </div>
+        
+        <nav class="sidebar-nav">
+          <a href="home.html"><i class="fas fa-home"></i> Home</a>
+          <a href="dashboard.html" class="active"><i class="fas fa-chart-line"></i> Dashboard</a>
+          <a href="add-habit.html"><i class="fas fa-plus-circle"></i> Add Habit</a>
+          <a href="analytics.html"><i class="fas fa-chart-pie"></i> Analytics</a>
+          <a href="mood.html"><i class="fas fa-smile"></i> Mood Tracker</a>
+          <a href="chatboat.html"><i class="fas fa-robot"></i> Wellness Buddy</a>
+        </nav>
+        
+        <div class="sidebar-footer">
+          <button class="download-btn" onclick="downloadPDF()">
+            <i class="fas fa-download"></i> Download Report
+          </button>
+           <button class="logout-btn" onclick="logoutUser()"><i class="fas fa-sign-out-alt"></i> Logout</button>
+          
+        </div>
       </div>
     </div>
 
+    <!-- Main Content -->
     <div class="main-content">
-
-      <div class="topbar-wrapper">
-        <div class="topbar">
+      <!-- Topbar -->
+      <div class="topbar">
+        <div class="topbar-content">
           <h1>Healthy Habits Dashboard</h1>
-          <div class="right-side">
+          <div class="topbar-right">
             <button class="toggle-theme" id="themeToggle" title="Toggle Light/Dark Mode">
               <i class="fas fa-adjust"></i>
             </button>
-           <div class="profile-icon" title="Your profile">
-             <i class="fas fa-user-circle"></i>
-          </div>
+            <div class="profile-icon" title="Your profile">
+              <i class="fas fa-user-circle"></i>
+            </div>
           </div>
         </div>
       </div>
 
-      <div style="height: 110px;"></div>
-
-      <div class="content-wrapper">
-        <section class="widget" id="wellnessScore">
-          <h3>Wellness Score</h3>
-          <div class="progress-container">
-            <div id="progressFill"></div>
+      <!-- Dashboard Content -->
+      <div class="dashboard-content">
+        <div class="dashboard-grid">
+          <!-- Wellness Score Widget -->
+          <div class="dashboard-widget wellness-score">
+            <div class="widget-header">
+              <h3><i class="fas fa-heart"></i> Wellness Score</h3>
+              <span class="widget-badge">Today</span>
+            </div>
+            <div class="wellness-content">
+              <div class="wellness-circle">
+                <div class="circle-progress">
+                  <div class="circle-value" id="progressPercent">0%</div>
+                </div>
+              </div>
+              <div class="wellness-details">
+                <div class="wellness-metrics">
+                  <div class="metric">
+                    <span class="metric-label">Habits Completed</span>
+                    <span class="metric-value" id="completedHabits">0</span>
+                  </div>
+                  <div class="metric">
+                    <span class="metric-label">Current Streak</span>
+                    <span class="metric-value" id="currentStreak">0 days</span>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
-          <p id="progressPercent">0%</p>
-          <canvas id="wellnessChart" width="40" height="20"></canvas>
-        </section>
 
-        <section class="widget">
-          <h3>Your Habits</h3>
-          <ul id="habit-list">
-            <li>Loading habits...</li>
-          </ul>
-        </section>
+          <!-- Motivation Quotes Widget -->
+          <div class="dashboard-widget quotes-container">
+            <div class="widget-header">
+              <h3><i class="fas fa-quote-left"></i> Daily Motivation</h3>
+              <span class="widget-badge" id="quote-counter">1/10</span>
+            </div>
+            <div class="quotes-content">
+              <div class="quote-text" id="current-quote">
+                "The journey of a thousand miles begins with one step."
+              </div>
+              <div class="quote-author" id="quote-author">- Lao Tzu</div>
+              
+              <div class="quote-controls">
+                <button class="quote-nav-btn" id="prev-quote">
+                  <i class="fas fa-chevron-left"></i>
+                </button>
+                
+                <div class="quote-indicators" id="quote-indicators">
+                  <!-- Indicators will be added by JavaScript -->
+                </div>
+                
+                <button class="quote-nav-btn" id="next-quote">
+                  <i class="fas fa-chevron-right"></i>
+                </button>
+              </div>
+              
+              <label class="auto-play-toggle">
+                <input type="checkbox" id="auto-play" checked>
+                <span class="toggle-slider"></span>
+                <span>Auto-play (10s)</span>
+              </label>
+            </div>
+          </div>
 
-        <section class="widget" id="moodHistorySection">
-          <h3>Mood History</h3>
-          <p id="mood-summary">Summary: Loading...</p>
-          <p id="mood-loading-text">Loading...</p>
-          <ul id="mood-history-list" class="mood-history-list"></ul>
-        </section>
+          <!-- Habits Widget -->
+          <div class="dashboard-widget">
+            <div class="widget-header">
+              <h3><i class="fas fa-tasks"></i> Your Habits</h3>
+              <a href="add-habit.html" class="add-btn">
+                <i class="fas fa-plus"></i> Add New
+              </a>
+            </div>
+            <div class="widget-body">
+              <ul id="habit-list" class="habit-list">
+                <li class="loading">Loading habits...</li>
+              </ul>
+            </div>
+          </div>
 
-        <section class="widget" id="aiSuggestions">
-          <h3>🤖 AI Suggestions</h3>
-          <ul id="suggestion-list">
-            <li>Loading personalized tips...</li>
-          </ul>
-          <button id="replayAiBtn" style="margin-top: 10px;">🔁 Replay Suggestions</button>
-        </section>
+          <!-- Mood History Widget -->
+          <div class="dashboard-widget">
+            <div class="widget-header">
+              <h3><i class="fas fa-smile"></i> Mood History</h3>
+              <a href="mood.html" class="add-btn">
+                <i class="fas fa-plus"></i> Add Mood
+              </a>
+            </div>
+            <div class="widget-body">
+              <div class="mood-summary" id="mood-summary">
+                Summary: Loading...
+              </div>
+              <ul id="mood-history-list" class="mood-history-list"></ul>
+            </div>
+          </div>
+        </div>
 
-        <footer class="footer">
-          <p><strong>Stay Consistent! 💪</strong></p>
-          <div class="share-buttons">
-            <a href="https://wa.me/?text=Check%20out%20my%20healthy%20habits!" target="_blank" title="Share on WhatsApp"><i class="fab fa-whatsapp"></i></a>
-            <a href="https://www.facebook.com/sharer/sharer.php?u=https://yourapp.com" target="_blank" title="Share on Facebook"><i class="fab fa-facebook"></i></a>
-            <a href="https://twitter.com/intent/tweet?text=I'm%20tracking%20my%20healthy%20habits!" target="_blank" title="Share on Twitter"><i class="fab fa-twitter"></i></a>
+        <!-- Footer -->
+        <footer class="dashboard-footer">
+          <div class="footer-content">
+            <p><strong>Stay Consistent! 💪</strong> Small daily improvements lead to stunning results.</p>
+            <div class="share-buttons">
+              <a href="https://wa.me/?text=Check%20out%20my%20healthy%20habits!" target="_blank" class="share-btn" title="Share on WhatsApp">
+                <i class="fab fa-whatsapp"></i>
+              </a>
+              <a href="https://www.facebook.com/sharer/sharer.php?u=https://yourapp.com" target="_blank" class="share-btn" title="Share on Facebook">
+                <i class="fab fa-facebook"></i>
+              </a>
+              <a href="https://twitter.com/intent/tweet?text=I'm%20tracking%20my%20healthy%20habits!" target="_blank" class="share-btn" title="Share on Twitter">
+                <i class="fab fa-twitter"></i>
+              </a>
+            </div>
           </div>
         </footer>
       </div>
@@ -102,6 +189,7 @@
 
   <audio id="aiSound" src="silence.mp3" preload="auto" style="display: none;"></audio>
 
+  <!-- Your existing scripts - they remain the same -->
   <script type="module" src="auth.js"></script>
   <script type="module" src="dashboard.js"></script>
   <script type="module" src="analytics.js"></script>
@@ -109,6 +197,64 @@
   <script type="module" src="export.js"></script>
   <script type="module" src="mood-history.js"></script>
   <script type="module" src="ai.js"></script>
+  
+  <script>
+    // Mobile menu toggle
+    const mobileMenuToggle = document.getElementById('mobileMenuToggle');
+    const sidebar = document.getElementById('sidebar');
+    
+    mobileMenuToggle.addEventListener('click', () => {
+      sidebar.classList.toggle('active');
+      mobileMenuToggle.innerHTML = sidebar.classList.contains('active') 
+        ? '<i class="fas fa-times"></i>' 
+        : '<i class="fas fa-bars"></i>';
+    });
+    
+    // Close sidebar when clicking outside on mobile
+    document.addEventListener('click', (event) => {
+      if (window.innerWidth <= 768) {
+        if (!sidebar.contains(event.target) && !mobileMenuToggle.contains(event.target)) {
+          sidebar.classList.remove('active');
+          mobileMenuToggle.innerHTML = '<i class="fas fa-bars"></i>';
+        }
+      }
+    });
+    
+    // Modal functionality
+    const reminderModal = document.getElementById('reminderModal');
+    const closeModalBtn = document.getElementById('closeModalBtn');
+    
+    closeModalBtn.addEventListener('click', () => {
+      reminderModal.style.display = 'none';
+    });
+    
+    window.addEventListener('click', (event) => {
+      if (event.target === reminderModal) {
+        reminderModal.style.display = 'none';
+      }
+    });
+    
+    // Theme toggle
+    const themeToggle = document.getElementById('themeToggle');
+    
+    themeToggle.addEventListener('click', () => {
+      document.body.classList.toggle('dark-mode');
+      localStorage.setItem('theme', document.body.classList.contains('dark-mode') ? 'dark' : 'light');
+    });
+    
+    // Check for saved theme preference
+    if (localStorage.getItem('theme') === 'dark') {
+      document.body.classList.add('dark-mode');
+    }
+    
+    window.downloadPDF = () => {
+      if (typeof generatePDF === "function") {
+        generatePDF();
+      } else {
+        alert("📄 PDF export feature will be available soon!");
+      }
+    };
+  </script>
   <script type="module">
     import { signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
     import { auth } from './auth.js';
@@ -117,13 +263,211 @@
       signOut(auth)
         .then(() => {
           alert("You have been logged out.");
-          window.location.href = "index.html";
+          window.location.href = "home.html";
         })
         .catch((error) => {
           console.error("Logout failed:", error);
           alert("Logout error.");
         });
     };
+  </script>
+  
+  <!-- Motivation Quotes Script -->
+  <script>
+    // Motivation Quotes Carousel
+    const quotes = [
+      {
+        text: "The journey of a thousand miles begins with one step.",
+        author: "Lao Tzu"
+      },
+      {
+        text: "Small daily improvements are the key to staggering long-term results.",
+        author: "John C. Maxwell"
+      },
+      {
+        text: "Your body can stand almost anything. It's your mind that you have to convince.",
+        author: "Anonymous"
+      },
+      {
+        text: "The only bad workout is the one that didn't happen.",
+        author: "Anonymous"
+      },
+      {
+        text: "Discipline is choosing between what you want now and what you want most.",
+        author: "Abraham Lincoln"
+      },
+      {
+        text: "Success is the sum of small efforts, repeated day in and day out.",
+        author: "Robert Collier"
+      },
+      {
+        text: "Your health is an investment, not an expense.",
+        author: "Anonymous"
+      },
+      {
+        text: "Don't wish for a good body, work for it.",
+        author: "Anonymous"
+      },
+      {
+        text: "Every day is a fresh start. Each morning is a new chapter in your life waiting to be written.",
+        author: "Anonymous"
+      },
+      {
+        text: "You don't have to be great to start, but you have to start to be great.",
+        author: "Zig Ziglar"
+      },
+      {
+        text: "The secret of getting ahead is getting started.",
+        author: "Mark Twain"
+      },
+      {
+        text: "Healthy habits are learned in the same way as unhealthy ones - through practice.",
+        author: "Wayne Dyer"
+      },
+      {
+        text: "Progress, not perfection, is what matters.",
+        author: "Anonymous"
+      },
+      {
+        text: "Your future self will thank you for the choices you make today.",
+        author: "Anonymous"
+      },
+      {
+        text: "Consistency is more important than intensity.",
+        author: "Anonymous"
+      }
+    ];
+
+    let currentQuoteIndex = 0;
+    let autoPlayInterval;
+    const AUTO_PLAY_DELAY = 10000; // 10 seconds
+
+    // DOM Elements
+    const currentQuoteElement = document.getElementById('current-quote');
+    const quoteAuthorElement = document.getElementById('quote-author');
+    const prevQuoteBtn = document.getElementById('prev-quote');
+    const nextQuoteBtn = document.getElementById('next-quote');
+    const quoteIndicatorsElement = document.getElementById('quote-indicators');
+    const quoteCounterElement = document.getElementById('quote-counter');
+    const autoPlayCheckbox = document.getElementById('auto-play');
+
+    // Initialize indicators
+    function initIndicators() {
+      quoteIndicatorsElement.innerHTML = '';
+      // Show only 10 indicators max to avoid clutter
+      const maxIndicators = Math.min(quotes.length, 10);
+      for (let i = 0; i < maxIndicators; i++) {
+        const indicator = document.createElement('div');
+        indicator.className = `quote-indicator ${i === currentQuoteIndex ? 'active' : ''}`;
+        indicator.addEventListener('click', () => {
+          showQuote(i);
+          resetAutoPlay();
+        });
+        quoteIndicatorsElement.appendChild(indicator);
+      }
+    }
+
+    // Show specific quote
+    function showQuote(index) {
+      currentQuoteIndex = index;
+      if (currentQuoteIndex < 0) currentQuoteIndex = quotes.length - 1;
+      if (currentQuoteIndex >= quotes.length) currentQuoteIndex = 0;
+      
+      const quote = quotes[currentQuoteIndex];
+      currentQuoteElement.textContent = `"${quote.text}"`;
+      quoteAuthorElement.textContent = `- ${quote.author}`;
+      quoteCounterElement.textContent = `${currentQuoteIndex + 1}/${quotes.length}`;
+      
+      // Update indicators
+      document.querySelectorAll('.quote-indicator').forEach((indicator, idx) => {
+        indicator.classList.toggle('active', idx === currentQuoteIndex);
+      });
+      
+      // Store last shown quote in localStorage
+      localStorage.setItem('lastQuoteIndex', currentQuoteIndex);
+      localStorage.setItem('lastQuoteTime', Date.now());
+    }
+
+    // Next quote
+    function nextQuote() {
+      showQuote(currentQuoteIndex + 1);
+    }
+
+    // Previous quote
+    function prevQuote() {
+      showQuote(currentQuoteIndex - 1);
+    }
+
+    // Auto-play functionality
+    function startAutoPlay() {
+      if (autoPlayInterval) clearInterval(autoPlayInterval);
+      autoPlayInterval = setInterval(nextQuote, AUTO_PLAY_DELAY);
+    }
+
+    function stopAutoPlay() {
+      if (autoPlayInterval) {
+        clearInterval(autoPlayInterval);
+        autoPlayInterval = null;
+      }
+    }
+
+    function resetAutoPlay() {
+      if (autoPlayCheckbox.checked) {
+        stopAutoPlay();
+        startAutoPlay();
+      }
+    }
+
+    // Event Listeners
+    prevQuoteBtn.addEventListener('click', () => {
+      prevQuote();
+      resetAutoPlay();
+    });
+
+    nextQuoteBtn.addEventListener('click', () => {
+      nextQuote();
+      resetAutoPlay();
+    });
+
+    autoPlayCheckbox.addEventListener('change', () => {
+      if (autoPlayCheckbox.checked) {
+        startAutoPlay();
+      } else {
+        stopAutoPlay();
+      }
+    });
+
+    // Initialize quotes
+    function initQuotes() {
+      initIndicators();
+      
+      // Check if we should show a new quote (based on time)
+      const lastQuoteTime = localStorage.getItem('lastQuoteTime');
+      const lastQuoteIndex = localStorage.getItem('lastQuoteIndex');
+      
+      if (lastQuoteTime && lastQuoteIndex) {
+        const timeDiff = Date.now() - parseInt(lastQuoteTime);
+        const hoursDiff = timeDiff / (1000 * 60 * 60);
+        
+        // If more than 1 hour has passed, show next quote
+        if (hoursDiff >= 1) {
+          showQuote((parseInt(lastQuoteIndex) + 1) % quotes.length);
+        } else {
+          showQuote(parseInt(lastQuoteIndex));
+        }
+      } else {
+        // First time - show random quote
+        showQuote(Math.floor(Math.random() * quotes.length));
+      }
+      
+      // Start auto-play if enabled
+      if (autoPlayCheckbox.checked) {
+        startAutoPlay();
+      }
+    }
+
+    // Initialize when DOM is loaded
+    document.addEventListener('DOMContentLoaded', initQuotes);
   </script>
 </body>
 </html>
